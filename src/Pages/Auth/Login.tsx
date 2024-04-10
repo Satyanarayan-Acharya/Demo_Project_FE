@@ -27,7 +27,7 @@ const Login = () => {
     try {
       const response = await dispatch(login({ email, password }));
       if (response.meta.requestStatus === "fulfilled") {
-        navigate("/home");
+        navigate("/navbar");
       } else {
         console.error("Login error:", response.status);
       }

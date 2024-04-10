@@ -1,10 +1,10 @@
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./Pages/Home/HomePage";
 import PrivateRoute from "./Routes/PrivateRoute";
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
 import ResetPassword from "./Pages/Auth/ResetPassword";
+import Navbar from "./Pages/Home/Navbar";
 
 function App() {
   return (
@@ -16,10 +16,10 @@ function App() {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route
-            path="/home"
+            path="/navbar"
             element={
               <PrivateRoute>
-                <HomePage />
+                <Navbar />
               </PrivateRoute>
             }
           />
