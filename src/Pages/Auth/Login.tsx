@@ -1,51 +1,3 @@
-// import React, { useState } from "react";
-// import { useDispatch } from 'react-redux';
-// import { login } from "../../Redux/authSlice/authSlice"; 
-//  import { useNavigate } from "react-router-dom";
-
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const dispatch = useDispatch<any>();
-//   const navigate = useNavigate();
-
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     try {
-//       await dispatch(login({email, password }));
-//       navigate("/home")
-//     } catch (error) {
-//       console.error("Login error:", error);
-//       alert("Login failed");
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <h2>Login</h2>
-//       <input
-//         type="email"
-//         placeholder="Email"
-//         value={email}
-//         onChange={(e) => setEmail(e.target.value)}
-//       />
-//       <input
-//         type="password"
-//         placeholder="Password"
-//         value={password}
-//         onChange={(e) => setPassword(e.target.value)}
-//       />
-//       <button type="submit">Login</button>
-//       <div>
-//       <p>Forgot Password: <button onClick={()=>navigate("/forgotpassword")}>Click Here</button> </p>
-//       <p>Don't have Account : <button onClick={()=>navigate("/register")}>Create Account</button> </p>
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default Login;
-
 import {
   Paper,
   TextInput,
@@ -80,7 +32,7 @@ const Login = () => {
         console.error("Login error:", response.status);
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error:asdas", error);
     }
   };
 
