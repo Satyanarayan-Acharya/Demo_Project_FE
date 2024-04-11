@@ -1,47 +1,3 @@
-// import React, { useState } from "react";
-// import { useDispatch } from 'react-redux';
-// import { register } from "../../Redux/authSlice/authSlice"; 
-// import { useNavigate } from "react-router-dom";
-
-// const Register = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const dispatch = useDispatch<any>();
-//   const navigate = useNavigate()
-
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     try {
-//       dispatch(register({ email, password }));
-//     } catch (error) {
-//       console.error("Registration error:", error);
-//       alert("Registration failed");
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <h2>Register</h2>
-//       <input
-//         type="email"
-//         placeholder="Email"
-//         value={email}
-//         onChange={(e) => setEmail(e.target.value)}
-//       />
-//       <input
-//         type="password"
-//         placeholder="Password"
-//         value={password}
-//         onChange={(e) => setPassword(e.target.value)}
-//       />
-//       <button type="submit">Register</button>
-//       <p>Already Have Account: <button onClick={()=>navigate("/")}>Login</button></p>
-//     </form>
-//   );
-// };
-
-// export default Register;
-
 import {
   Paper,
   TextInput,
@@ -53,18 +9,25 @@ import {
   Group,
 } from '@mantine/core';
 import classes from '../../Styles/LoginAuth.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {  register } from '../../Redux/authSlice/authSlice';
 import { GoogleButton } from '../../Global_Components/GoogleIcon';
-import { TwitterButton } from '../../Global_Components/TwitterButton';
+import GoogleLogin from 'react-google-login';
+import { gapi } from 'gapi-script';
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch<any>();
   const navigate = useNavigate()
+
+  useEffect(()=>{
+    gapi.load("client:auth2",()=>{
+      gapi.auth2.init({clientId:"413627927433-em8p7fsp32soar8bgf05f6kcl3n3jbnp.apps.googleusercontent.com"})
+    })
+  },[])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,6 +39,16 @@ const Register = () => {
       console.error("Registration error:", error);
     }
   };
+  const handleSuccess = async (response:any) => {
+    console.log('Google Login Success:', response.profileObj);
+    const user = response.profileObj
+    await localStorage.setItem("token_dummy",JSON.stringify(user.googleId))
+    navigate("/navbar")
+ };
+ const handleFailure = (response:any) => {
+    console.error('Google Login Failed:', response);
+ };
+
   return (
     <div className={classes.wrapper}>
       <Paper className={classes.form} radius={0} p={30}>
@@ -92,8 +65,15 @@ const Register = () => {
           Register
         </Button>
         <Group grow mb="md" mt="md">
-        <GoogleButton radius="xl">Google</GoogleButton>
-        <TwitterButton radius="xl">Twitter</TwitterButton>
+        <GoogleButton radius="xl">
+        <GoogleLogin
+              clientId="413627927433-em8p7fsp32soar8bgf05f6kcl3n3jbnp.apps.googleusercontent.com"
+              buttonText="Google"
+              onSuccess={handleSuccess}
+              onFailure={handleFailure}
+              cookiePolicy={"single_host_origin"}
+            />
+          </GoogleButton>
       </Group>       
         <Text ta="center" mt="md">
           Already have  account?{' '}

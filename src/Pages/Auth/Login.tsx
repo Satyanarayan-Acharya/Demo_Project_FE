@@ -9,18 +9,25 @@ import {
   Group,
 } from "@mantine/core";
 import classes from "../../Styles/LoginAuth.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../Redux/authSlice/authSlice";
 import { GoogleButton } from "../../Global_Components/GoogleIcon";
-import { TwitterButton } from "../../Global_Components/TwitterButton";
+import { GoogleLogin } from 'react-google-login';
+import { gapi } from "gapi-script";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    gapi.load("client:auth2",()=>{
+      gapi.auth2.init({clientId:"413627927433-em8p7fsp32soar8bgf05f6kcl3n3jbnp.apps.googleusercontent.com"})
+    })
+  },[])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +42,16 @@ const Login = () => {
       console.error("Login error:asdas", error);
     }
   };
+
+  const handleSuccess = async (response:any) => {
+    console.log('Google Login Success:', response.profileObj);
+    const user = response.profileObj
+    await localStorage.setItem("token_dummy",JSON.stringify(user.googleId))
+    navigate("/navbar")
+ };
+ const handleFailure = (response:any) => {
+    console.error('Google Login Failed:', response);
+ };
 
   return (
     <div className={classes.wrapper}>
@@ -56,7 +73,11 @@ const Login = () => {
           mt="md"
           size="md"
         />
-        <Anchor<"a"> fw={400} size="sm" onClick={()=>navigate("/forgotpassword")}>
+        <Anchor<"a">
+          fw={400}
+          size="sm"
+          onClick={() => navigate("/forgotpassword")}
+        >
           Forgot Password?
         </Anchor>
         <Button
@@ -68,8 +89,15 @@ const Login = () => {
           Login
         </Button>
         <Group grow mb="md" mt="md">
-          <GoogleButton radius="xl">Google</GoogleButton>
-          <TwitterButton radius="xl">Twitter</TwitterButton>
+          <GoogleButton radius="xl">
+            <GoogleLogin
+              clientId="413627927433-em8p7fsp32soar8bgf05f6kcl3n3jbnp.apps.googleusercontent.com"
+              buttonText="Google"
+              onSuccess={handleSuccess}
+              onFailure={handleFailure}
+              cookiePolicy={"single_host_origin"}
+            />
+          </GoogleButton>
         </Group>
         <Text ta="center" mt="md">
           Don&apos;t have an account?{" "}
